@@ -65,8 +65,12 @@ export function ScenarioManager(
 
   const del = async (id: number) => { await api.deleteLineItem(id); onReload(); };
 
+  const isAmount = (key: keyof Draft) =>
+    key === "budget_amount" || key === "actual_amount";
+
   const editField = (key: keyof Draft, extra = "") => (
     <input
+      type={isAmount(key) ? "number" : "text"}
       value={editDraft[key]}
       onChange={(e) => setEditDraft({ ...editDraft, [key]: e.target.value })}
       className={`w-full rounded border px-1 py-0.5 text-sm ${extra}`}
@@ -158,7 +162,8 @@ export function ScenarioManager(
       <div className="space-y-1">
         <div className="grid grid-cols-5 gap-1 text-sm">
           {(["department", "category", "budget_amount", "actual_amount"] as const).map((f) => (
-            <input key={f} placeholder={f.split("_")[0]} value={draft[f]}
+            <input key={f} type={isAmount(f) ? "number" : "text"}
+              placeholder={f.split("_")[0]} value={draft[f]}
               onChange={(e) => setDraft({ ...draft, [f]: e.target.value })}
               className="rounded border px-2 py-1" />
           ))}
