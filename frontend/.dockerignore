@@ -1,0 +1,5 @@
+# Source is bind-mounted at runtime; only package*.json is needed at build.
+node_modules
+.next
+.env
+*.tsbuildinfo

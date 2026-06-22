@@ -1,0 +1,5 @@
+# Source is bind-mounted at runtime; only requirements.txt is needed at build.
+__pycache__/
+*.pyc
+db.sqlite3
+.env

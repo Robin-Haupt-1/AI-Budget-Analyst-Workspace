@@ -1,0 +1,25 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4o}
+      - DJANGO_DEBUG=1
+    # Bind-mount the source so edits hot-reload (uvicorn --reload); the image
+    # only carries the installed Python dependencies.
+    volumes:
+      - ./backend:/app
+  frontend:
+    build: ./frontend
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    environment:
+      - NEXT_PUBLIC_API_BASE=http://localhost:${BACKEND_PORT:-8000}
+    # Bind-mount the source for hot reload, but keep the image's installed
+    # node_modules via an anonymous volume so the host mount doesn't hide it.
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on: [backend]
