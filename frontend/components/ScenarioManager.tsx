@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { api } from "@/lib/api";
 import { Scenario, LineItem } from "@/lib/types";
 
@@ -98,19 +98,23 @@ export function ScenarioManager(
             const variance = Number(li.actual_amount) - Number(li.budget_amount);
             if (editingId === li.id) {
               return (
-                <tr key={li.id} className="border-b last:border-0 bg-amber-50/50">
-                  <td className="py-1 pr-1">{editField("department")}</td>
-                  <td className="pr-1">{editField("category")}</td>
-                  <td className="pr-1">{editField("budget_amount", "text-right")}</td>
-                  <td className="pr-1">{editField("actual_amount", "text-right")}</td>
-                  <td colSpan={2} className="align-top text-right whitespace-nowrap">
-                    <button disabled={busy} onClick={() => saveEdit(li.id)}
-                      className="text-xs text-green-700 px-1">save</button>
-                    <button onClick={() => setEditingId(null)}
-                      className="text-xs text-gray-400 px-1">cancel</button>
-                    <div className="pt-1">{editField("notes")}</div>
-                  </td>
-                </tr>
+                <Fragment key={li.id}>
+                  <tr className="bg-amber-50/50">
+                    <td className="py-1 pr-1">{editField("department")}</td>
+                    <td className="pr-1">{editField("category")}</td>
+                    <td className="pr-1">{editField("budget_amount", "text-right")}</td>
+                    <td className="pr-1">{editField("actual_amount", "text-right")}</td>
+                    <td colSpan={2} className="text-right whitespace-nowrap">
+                      <button disabled={busy} onClick={() => saveEdit(li.id)}
+                        className="text-xs text-green-700 px-1">save</button>
+                      <button onClick={() => setEditingId(null)}
+                        className="text-xs text-gray-400 px-1">cancel</button>
+                    </td>
+                  </tr>
+                  <tr className="border-b last:border-0 bg-amber-50/50">
+                    <td colSpan={6} className="pb-1">{editField("notes", "")}</td>
+                  </tr>
+                </Fragment>
               );
             }
             return (
