@@ -94,14 +94,17 @@ async def list_scenarios(ctx: RunContextWrapper[BudgetContext]) -> dict:
 async def load_scenario_data(ctx: RunContextWrapper[BudgetContext],
                             department: str = "", category: str = "") -> dict:
     """Load the line items for the current scenario (department, category, budget,
-    actual). Optionally filter by department and/or category (case-insensitive) —
-    e.g. department='Marketing' for 'list just the marketing items'.
+    actual, notes). Optionally filter by department and/or category
+    (case-insensitive) — e.g. department='Marketing' for 'list just the marketing
+    items'. The `notes` field is the reviewer's free-text explanation for a line
+    (e.g. WHY it is over budget) — use it to explain variances, not just report them.
 
     RENDERS: a "Line items" table (one row per line item) in the chat. The user
     already sees the rows — summarise or interpret, don't reprint them."""
     items = await _load(ctx.context.scenario_id, department, category)
     rows = [{"department": it.department, "category": it.category,
-             "budget": it.budget, "actual": it.actual} for it in items]
+             "budget": it.budget, "actual": it.actual, "notes": it.notes}
+            for it in items]
     return _table(ctx, "line_items", rows, "Line items" + _filter_suffix(department, category))
 
 

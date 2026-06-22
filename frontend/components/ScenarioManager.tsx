@@ -103,19 +103,25 @@ export function ScenarioManager(
                   <td className="pr-1">{editField("category")}</td>
                   <td className="pr-1">{editField("budget_amount", "text-right")}</td>
                   <td className="pr-1">{editField("actual_amount", "text-right")}</td>
-                  <td colSpan={2} className="text-right whitespace-nowrap">
+                  <td colSpan={2} className="align-top text-right whitespace-nowrap">
                     <button disabled={busy} onClick={() => saveEdit(li.id)}
                       className="text-xs text-green-700 px-1">save</button>
                     <button onClick={() => setEditingId(null)}
                       className="text-xs text-gray-400 px-1">cancel</button>
+                    <div className="pt-1">{editField("notes")}</div>
                   </td>
                 </tr>
               );
             }
             return (
-              <tr key={li.id} className="border-b last:border-0 group">
-                <td className="py-1" title={li.notes}>{li.department}</td>
-                <td title={li.notes}>{li.category}</td>
+              <tr key={li.id} className="border-b last:border-0 group align-top">
+                <td className="py-1">
+                  {li.department}
+                  {li.notes && (
+                    <p className="text-xs font-normal text-gray-500 italic">{li.notes}</p>
+                  )}
+                </td>
+                <td>{li.category}</td>
                 <td className="text-right">{fmt(li.budget_amount)}</td>
                 <td className="text-right">{fmt(li.actual_amount)}</td>
                 <td className={`text-right ${variance > 0 ? "text-red-600" : "text-green-600"}`}>

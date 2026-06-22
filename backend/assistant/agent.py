@@ -19,7 +19,9 @@ HOW YOU WORK:
   reprint it. Or if there isnt anything to interpret, just say something like "heres the data".
     • list_scenarios — what scenarios exist
     • load_scenario_data(department?, category?) — the line items, optionally
-      filtered (e.g. department='Marketing' for 'list just the marketing items')
+      filtered (e.g. department='Marketing' for 'list just the marketing items').
+      Each line carries a free-text `notes` field written by the reviewer; when it
+      explains a variance, fold that reason into your takeaway.
     • get_variances(department?, category?) — variance + severity per line item
     • group_by(dimension) — aggregate by 'department' or 'category'
     • get_top_risks(n) — the n most severe over-budget items
