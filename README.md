@@ -136,3 +136,5 @@ unit-tested independently of the LLM.
   persisting datasets across turns would remove that extra call.
 - A proper eval harness: a fixed set of question→expected-tool/expected-widget
   cases to guard against regressions in agent tool-selection.
+- Improve frontend form handling with required fields and maybe use a library 
+- for the AI components to improve consistency and save time.
