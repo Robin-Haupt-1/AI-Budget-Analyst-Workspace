@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { api } from "@/lib/api";
 import { Scenario, LineItem } from "@/lib/types";
 
@@ -65,8 +65,12 @@ export function ScenarioManager(
 
   const del = async (id: number) => { await api.deleteLineItem(id); onReload(); };
 
+  const isAmount = (key: keyof Draft) =>
+    key === "budget_amount" || key === "actual_amount";
+
   const editField = (key: keyof Draft, extra = "") => (
     <input
+      type={isAmount(key) ? "number" : "text"}
       value={editDraft[key]}
       onChange={(e) => setEditDraft({ ...editDraft, [key]: e.target.value })}
       className={`w-full rounded border px-1 py-0.5 text-sm ${extra}`}
@@ -98,24 +102,34 @@ export function ScenarioManager(
             const variance = Number(li.actual_amount) - Number(li.budget_amount);
             if (editingId === li.id) {
               return (
-                <tr key={li.id} className="border-b last:border-0 bg-amber-50/50">
-                  <td className="py-1 pr-1">{editField("department")}</td>
-                  <td className="pr-1">{editField("category")}</td>
-                  <td className="pr-1">{editField("budget_amount", "text-right")}</td>
-                  <td className="pr-1">{editField("actual_amount", "text-right")}</td>
-                  <td colSpan={2} className="text-right whitespace-nowrap">
-                    <button disabled={busy} onClick={() => saveEdit(li.id)}
-                      className="text-xs text-green-700 px-1">save</button>
-                    <button onClick={() => setEditingId(null)}
-                      className="text-xs text-gray-400 px-1">cancel</button>
-                  </td>
-                </tr>
+                <Fragment key={li.id}>
+                  <tr className="bg-amber-50/50">
+                    <td className="py-1 pr-1">{editField("department")}</td>
+                    <td className="pr-1">{editField("category")}</td>
+                    <td className="pr-1">{editField("budget_amount", "text-right")}</td>
+                    <td className="pr-1">{editField("actual_amount", "text-right")}</td>
+                    <td colSpan={2} className="text-right whitespace-nowrap">
+                      <button disabled={busy} onClick={() => saveEdit(li.id)}
+                        className="text-xs text-green-700 px-1">save</button>
+                      <button onClick={() => setEditingId(null)}
+                        className="text-xs text-gray-400 px-1">cancel</button>
+                    </td>
+                  </tr>
+                  <tr className="border-b last:border-0 bg-amber-50/50">
+                    <td colSpan={6} className="pb-1">{editField("notes", "")}</td>
+                  </tr>
+                </Fragment>
               );
             }
             return (
-              <tr key={li.id} className="border-b last:border-0 group">
-                <td className="py-1" title={li.notes}>{li.department}</td>
-                <td title={li.notes}>{li.category}</td>
+              <tr key={li.id} className="border-b last:border-0 group align-top">
+                <td className="py-1">
+                  {li.department}
+                  {li.notes && (
+                    <p className="text-xs font-normal text-gray-500 italic">{li.notes}</p>
+                  )}
+                </td>
+                <td>{li.category}</td>
                 <td className="text-right">{fmt(li.budget_amount)}</td>
                 <td className="text-right">{fmt(li.actual_amount)}</td>
                 <td className={`text-right ${variance > 0 ? "text-red-600" : "text-green-600"}`}>
@@ -148,7 +162,8 @@ export function ScenarioManager(
       <div className="space-y-1">
         <div className="grid grid-cols-5 gap-1 text-sm">
           {(["department", "category", "budget_amount", "actual_amount"] as const).map((f) => (
-            <input key={f} placeholder={f.split("_")[0]} value={draft[f]}
+            <input key={f} type={isAmount(f) ? "number" : "text"}
+              placeholder={f.split("_")[0]} value={draft[f]}
               onChange={(e) => setDraft({ ...draft, [f]: e.target.value })}
               className="rounded border px-2 py-1" />
           ))}

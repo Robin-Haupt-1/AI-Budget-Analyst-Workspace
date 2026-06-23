@@ -25,6 +25,7 @@ class LineItemData:
     category: str
     budget: float
     actual: float
+    notes: str = ""
 
     @classmethod
     def from_model(cls, m) -> "LineItemData":
@@ -33,6 +34,7 @@ class LineItemData:
             category=m.category,
             budget=float(m.budget_amount),
             actual=float(m.actual_amount),
+            notes=getattr(m, "notes", "") or "",
         )
 
 
